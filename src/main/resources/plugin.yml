@@ -1,0 +1,6 @@
+name: umucore
+version: '${version}'
+
+main: br.com.umucraft.umucore.Umucore
+api-version: '26.2'
+load: POSTWORLD
