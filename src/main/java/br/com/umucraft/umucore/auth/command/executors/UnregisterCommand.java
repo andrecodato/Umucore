@@ -2,6 +2,7 @@ package br.com.umucraft.umucore.auth.command.executors;
 
 import br.com.umucraft.umucore.Umucore;
 import br.com.umucraft.umucore.auth.AuthManager;
+import br.com.umucraft.umucore.auth.config.AuthConfig;
 import br.com.umucraft.umucore.auth.data.Account;
 import br.com.umucraft.umucore.auth.data.AccountRepository;
 import br.com.umucraft.umucore.logger.UmuLogger;
@@ -23,17 +24,24 @@ public class UnregisterCommand implements CommandExecutor {
     private final Umucore plugin;
     private final AuthManager authManager;
     private final AccountRepository accountRepository;
+    private final AuthConfig authConfig;
 
-    public UnregisterCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository) {
+    public UnregisterCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, AuthConfig authConfig) {
         this.plugin = plugin;
         this.authManager = authManager;
         this.accountRepository = accountRepository;
+        this.authConfig = authConfig;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player jogador)) {
             sender.sendMessage("Apenas jogadores usam este comando.");
+            return true;
+        }
+
+        if (!authConfig.permitirUnregister()) {
+            jogador.sendMessage(Component.text("❌ Este comando está desabilitado neste servidor.", NamedTextColor.RED));
             return true;
         }
 

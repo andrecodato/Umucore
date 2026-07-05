@@ -8,12 +8,16 @@ load: POSTWORLD
 commands:
   register:
     description: Registra uma nova conta no servidor.
+    aliases: [registrar]
   login:
     description: Faz login em uma conta já registrada.
+    aliases: [entrar]
   unregister:
     description: Apaga permanentemente sua conta registrada.
+    aliases: [desregistrar]
   changepassword:
     description: Altera a senha da sua conta.
+    aliases: [mudarsenha]
   premium:
     description: Ativa o modo de login automático para contas Premium.
   offline:
@@ -30,8 +34,29 @@ permissions:
   umucore.admin.auth.forcelogin:
     description: Permite forçar o login de outro jogador.
     default: op
-  umucore.admin.auth.forceunregister:
-    description: Permite apagar a conta de outro jogador à força.
+  umucore.admin.auth.delete:
+    description: Permite apagar a conta inteira de outro jogador à força.
+    default: op
+  umucore.admin.auth.unregister:
+    description: Permite remover só a senha de outro jogador, mantendo a conta.
+    default: op
+  umucore.admin.auth.listaccounts:
+    description: Permite listar as contas cadastradas.
+    default: op
+  umucore.admin.auth.verify:
+    description: Permite ver detalhes da conta de outro jogador.
+    default: op
+  umucore.admin.auth.changepass:
+    description: Permite redefinir a senha de outro jogador.
+    default: op
+  umucore.admin.auth.setpremium:
+    description: Permite ativar/desativar o modo Premium de outro jogador.
+    default: op
+  umucore.admin.auth.dupeip:
+    description: Permite listar contas que compartilham o mesmo IP.
+    default: op
+  umucore.admin.auth.kickunauth:
+    description: Permite remover todos os jogadores não autenticados de uma vez.
     default: op
   umucore.admin.auth.reload:
     description: Permite recarregar as configurações do UmuCore.

@@ -5,7 +5,7 @@ import br.com.umucraft.umucore.auth.PreAuthDecision;
 import br.com.umucraft.umucore.auth.data.Account;
 import br.com.umucraft.umucore.auth.data.AccountRepository;
 import br.com.umucraft.umucore.auth.data.MojangApiClient;
-import br.com.umucraft.umucore.config.ConfigManager;
+import br.com.umucraft.umucore.auth.config.AuthConfig;
 import br.com.umucraft.umucore.logger.UmuLogger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,14 +24,14 @@ public class PlayerAuthenticateListener implements Listener {
 
     private final AuthManager authManager;
     private final AccountRepository accountRepository;
-    private final ConfigManager configManager;
+    private final AuthConfig authConfig;
     private final MojangApiClient mojangApiClient;
 
     public PlayerAuthenticateListener(AuthManager authManager, AccountRepository accountRepository,
-                                       ConfigManager configManager, MojangApiClient mojangApiClient) {
+                                       AuthConfig authConfig, MojangApiClient mojangApiClient) {
         this.authManager = authManager;
         this.accountRepository = accountRepository;
-        this.configManager = configManager;
+        this.authConfig = authConfig;
         this.mojangApiClient = mojangApiClient;
     }
 
@@ -50,12 +50,12 @@ public class PlayerAuthenticateListener implements Listener {
 
             Account conta = contaOpt.get();
 
-            boolean autoLoginPorIp = configManager.ipAutoLoginHabilitado()
+            boolean autoLoginPorIp = authConfig.ipAutoLoginHabilitado()
                     && ip.equals(conta.ultimoIp())
-                    && (System.currentTimeMillis() - conta.ultimoLoginEpochMillis()) <= configManager.ipAutoLoginJanelaMinutos() * 60_000L;
+                    && (System.currentTimeMillis() - conta.ultimoLoginEpochMillis()) <= authConfig.ipAutoLoginJanelaMinutos() * 60_000L;
 
             boolean premiumAutoLogin = conta.premium()
-                    && configManager.premiumHabilitado()
+                    && authConfig.premiumHabilitado()
                     && mojangApiClient.nomeEhPremium(evento.getName());
 
             PreAuthDecision decisao = new PreAuthDecision(true, autoLoginPorIp, premiumAutoLogin);

@@ -18,11 +18,12 @@ public class DatabaseManager {
     private final File arquivoBanco;
     private Connection conexao;
 
-    public DatabaseManager(File pastaDeDados) {
-        if (!pastaDeDados.exists()) {
-            pastaDeDados.mkdirs();
+    public DatabaseManager(File pastaDeDadosDoPlugin) {
+        File pastaBanco = new File(pastaDeDadosDoPlugin, "database");
+        if (!pastaBanco.exists()) {
+            pastaBanco.mkdirs();
         }
-        this.arquivoBanco = new File(pastaDeDados, "dados.db");
+        this.arquivoBanco = new File(pastaBanco, "dados.db");
     }
 
     /**

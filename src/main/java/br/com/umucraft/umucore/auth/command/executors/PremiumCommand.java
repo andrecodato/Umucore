@@ -4,7 +4,7 @@ import br.com.umucraft.umucore.Umucore;
 import br.com.umucraft.umucore.auth.AuthManager;
 import br.com.umucraft.umucore.auth.data.AccountRepository;
 import br.com.umucraft.umucore.auth.data.MojangApiClient;
-import br.com.umucraft.umucore.config.ConfigManager;
+import br.com.umucraft.umucore.auth.config.AuthConfig;
 import br.com.umucraft.umucore.logger.UmuLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,15 +22,15 @@ public class PremiumCommand implements CommandExecutor {
     private final Umucore plugin;
     private final AuthManager authManager;
     private final AccountRepository accountRepository;
-    private final ConfigManager configManager;
+    private final AuthConfig authConfig;
     private final MojangApiClient mojangApiClient;
 
     public PremiumCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository,
-                           ConfigManager configManager, MojangApiClient mojangApiClient) {
+                           AuthConfig authConfig, MojangApiClient mojangApiClient) {
         this.plugin = plugin;
         this.authManager = authManager;
         this.accountRepository = accountRepository;
-        this.configManager = configManager;
+        this.authConfig = authConfig;
         this.mojangApiClient = mojangApiClient;
     }
 
@@ -41,7 +41,7 @@ public class PremiumCommand implements CommandExecutor {
             return true;
         }
 
-        if (!configManager.premiumHabilitado()) {
+        if (!authConfig.premiumHabilitado()) {
             jogador.sendMessage(Component.text("❌ O modo Premium está desativado neste servidor.", NamedTextColor.RED));
             return true;
         }

@@ -4,7 +4,7 @@ import br.com.umucraft.umucore.Umucore;
 import br.com.umucraft.umucore.auth.AuthManager;
 import br.com.umucraft.umucore.auth.data.Account;
 import br.com.umucraft.umucore.auth.data.AccountRepository;
-import br.com.umucraft.umucore.config.ConfigManager;
+import br.com.umucraft.umucore.auth.config.AuthConfig;
 import br.com.umucraft.umucore.logger.UmuLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -24,13 +24,13 @@ public class ChangePasswordCommand implements CommandExecutor {
     private final Umucore plugin;
     private final AuthManager authManager;
     private final AccountRepository accountRepository;
-    private final ConfigManager configManager;
+    private final AuthConfig authConfig;
 
-    public ChangePasswordCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, ConfigManager configManager) {
+    public ChangePasswordCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, AuthConfig authConfig) {
         this.plugin = plugin;
         this.authManager = authManager;
         this.accountRepository = accountRepository;
-        this.configManager = configManager;
+        this.authConfig = authConfig;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ChangePasswordCommand implements CommandExecutor {
             return true;
         }
 
-        int senhaMinima = configManager.senhaMinima();
+        int senhaMinima = authConfig.senhaMinima();
         if (novaSenha.length() < senhaMinima) {
             jogador.sendMessage(Component.text("⚠ Sua nova senha deve ter pelo menos " + senhaMinima + " caracteres.", NamedTextColor.GOLD));
             return true;
@@ -79,9 +79,15 @@ public class ChangePasswordCommand implements CommandExecutor {
 
                 Account conta = contaOpt.get();
 
-                if (conta.senhaHash() == null) {
+                if (conta.senhaHash() == null && conta.premium()) {
                     Bukkit.getScheduler().runTask(plugin, () ->
                             jogador.sendMessage(Component.text("❌ Contas Premium não possuem senha. Use /offline <senha> <confirmarSenha> para criar uma.", NamedTextColor.RED)));
+                    return;
+                }
+
+                if (conta.senhaHash() == null) {
+                    Bukkit.getScheduler().runTask(plugin, () ->
+                            jogador.sendMessage(Component.text("❌ Sua conta ainda não tem uma senha definida! Use /register <senha> <confirmarSenha>", NamedTextColor.RED)));
                     return;
                 }
 

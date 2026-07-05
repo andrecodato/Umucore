@@ -2,8 +2,9 @@ package br.com.umucraft.umucore.auth.command.executors;
 
 import br.com.umucraft.umucore.Umucore;
 import br.com.umucraft.umucore.auth.AuthManager;
+import br.com.umucraft.umucore.auth.config.AuthConfig;
+import br.com.umucraft.umucore.auth.data.Account;
 import br.com.umucraft.umucore.auth.data.AccountRepository;
-import br.com.umucraft.umucore.config.ConfigManager;
 import br.com.umucraft.umucore.logger.UmuLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 
 public class RegisterCommand implements CommandExecutor {
@@ -22,13 +24,13 @@ public class RegisterCommand implements CommandExecutor {
     private final Umucore plugin;
     private final AuthManager authManager;
     private final AccountRepository accountRepository;
-    private final ConfigManager configManager;
+    private final AuthConfig authConfig;
 
-    public RegisterCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, ConfigManager configManager) {
+    public RegisterCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, AuthConfig authConfig) {
         this.plugin = plugin;
         this.authManager = authManager;
         this.accountRepository = accountRepository;
-        this.configManager = configManager;
+        this.authConfig = authConfig;
     }
 
     @Override
@@ -59,7 +61,7 @@ public class RegisterCommand implements CommandExecutor {
             return true;
         }
 
-        int senhaMinima = configManager.senhaMinima();
+        int senhaMinima = authConfig.senhaMinima();
         if (senha.length() < senhaMinima) {
             jogador.sendMessage(Component.text("⚠ Sua senha deve ter pelo menos " + senhaMinima + " caracteres.", NamedTextColor.GOLD));
             return true;
@@ -67,14 +69,22 @@ public class RegisterCommand implements CommandExecutor {
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                if (accountRepository.existeConta(nick)) {
+                Optional<Account> contaOpt = accountRepository.buscarPorNome(nick);
+
+                if (contaOpt.isPresent() && contaOpt.get().senhaHash() != null) {
                     Bukkit.getScheduler().runTask(plugin, () ->
                             jogador.sendMessage(Component.text("❌ Esta conta já está registrada. Use /login <senha>", NamedTextColor.RED)));
                     return;
                 }
 
                 String hash = BCrypt.hashpw(senha, BCrypt.gensalt());
-                accountRepository.criarConta(nick, hash, false, System.currentTimeMillis());
+
+                if (contaOpt.isPresent()) {
+                    // Conta existe mas sem senha (ex: liberada via /umuauth unregister) — só define a senha.
+                    accountRepository.atualizarSenha(nick, hash);
+                } else {
+                    accountRepository.criarConta(nick, hash, false, System.currentTimeMillis());
+                }
 
                 String ip = jogador.getAddress() != null ? jogador.getAddress().getAddress().getHostAddress() : null;
                 accountRepository.atualizarUltimoLogin(nick, ip, System.currentTimeMillis());

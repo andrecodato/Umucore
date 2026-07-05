@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -87,6 +89,39 @@ public class AccountRepository {
         }
     }
 
+    /**
+     * Remove apenas a senha da conta (mantém a linha, premium, IP e datas
+     * intactos). Usado pelo /umuauth unregister — diferente de
+     * {@link #deletarConta(String)}, que apaga a conta inteira.
+     */
+    public void limparSenha(String nomeMinusculo) throws SQLException {
+        String sql = "UPDATE contas SET senha_hash = NULL WHERE nome_minusculo = ?";
+        Connection conexao = databaseManager.getConexao();
+
+        try (PreparedStatement statement = conexao.prepareStatement(sql)) {
+            statement.setString(1, nomeMinusculo);
+            statement.executeUpdate();
+        }
+    }
+
+    public List<Account> listarContasPorIp(String ip) throws SQLException {
+        String sql = "SELECT * FROM contas WHERE ultimo_ip = ? ORDER BY nome_minusculo";
+        Connection conexao = databaseManager.getConexao();
+        List<Account> contas = new ArrayList<>();
+
+        try (PreparedStatement statement = conexao.prepareStatement(sql)) {
+            statement.setString(1, ip);
+
+            try (ResultSet resultado = statement.executeQuery()) {
+                while (resultado.next()) {
+                    contas.add(mapearConta(resultado));
+                }
+            }
+        }
+
+        return contas;
+    }
+
     public void atualizarUltimoLogin(String nomeMinusculo, String ip, long timestamp) throws SQLException {
         String sql = "UPDATE contas SET ultimo_ip = ?, ultimo_login = ? WHERE nome_minusculo = ?";
         Connection conexao = databaseManager.getConexao();
@@ -96,6 +131,36 @@ public class AccountRepository {
             statement.setLong(2, timestamp);
             statement.setString(3, nomeMinusculo);
             statement.executeUpdate();
+        }
+    }
+
+    public List<Account> listarContas(int offset, int limite) throws SQLException {
+        String sql = "SELECT * FROM contas ORDER BY nome_minusculo LIMIT ? OFFSET ?";
+        Connection conexao = databaseManager.getConexao();
+        List<Account> contas = new ArrayList<>();
+
+        try (PreparedStatement statement = conexao.prepareStatement(sql)) {
+            statement.setInt(1, limite);
+            statement.setInt(2, offset);
+
+            try (ResultSet resultado = statement.executeQuery()) {
+                while (resultado.next()) {
+                    contas.add(mapearConta(resultado));
+                }
+            }
+        }
+
+        return contas;
+    }
+
+    public int contarContas() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM contas";
+        Connection conexao = databaseManager.getConexao();
+
+        try (PreparedStatement statement = conexao.prepareStatement(sql);
+             ResultSet resultado = statement.executeQuery()) {
+            resultado.next();
+            return resultado.getInt(1);
         }
     }
 

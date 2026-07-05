@@ -6,7 +6,7 @@ import br.com.umucraft.umucore.auth.PreAuthDecision;
 import br.com.umucraft.umucore.auth.data.AccountRepository;
 import br.com.umucraft.umucore.auth.task.LoginTimeoutTask;
 import br.com.umucraft.umucore.auth.ui.TitleAPI;
-import br.com.umucraft.umucore.config.ConfigManager;
+import br.com.umucraft.umucore.auth.config.AuthConfig;
 import br.com.umucraft.umucore.logger.UmuLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,13 +26,13 @@ public class PlayerJoinListeners implements Listener {
     private final Umucore plugin;
     private final AuthManager authManager;
     private final AccountRepository accountRepository;
-    private final ConfigManager configManager;
+    private final AuthConfig authConfig;
 
-    public PlayerJoinListeners(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, ConfigManager configManager) {
+    public PlayerJoinListeners(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, AuthConfig authConfig) {
         this.plugin = plugin;
         this.authManager = authManager;
         this.accountRepository = accountRepository;
-        this.configManager = configManager;
+        this.authConfig = authConfig;
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -61,7 +61,7 @@ public class PlayerJoinListeners implements Listener {
                         : "➡ Use /register <senha> <confirmarSenha> para criar sua conta.",
                 NamedTextColor.LIGHT_PURPLE));
 
-        LoginTimeoutTask task = new LoginTimeoutTask(jogador, authManager, configManager.timeoutLoginSegundos());
+        LoginTimeoutTask task = new LoginTimeoutTask(jogador, authManager, authConfig.timeoutLoginSegundos());
         BukkitTask bukkitTask = task.runTaskTimer(plugin, 0L, 20L);
         authManager.registrarTaskAtiva(uuid, bukkitTask);
     }

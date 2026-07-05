@@ -70,6 +70,12 @@ public class LoginCommand implements CommandExecutor {
                     return;
                 }
 
+                if (conta.senhaHash() == null) {
+                    Bukkit.getScheduler().runTask(plugin, () ->
+                            jogador.sendMessage(Component.text("❌ Sua conta ainda não tem uma senha definida! Use /register <senha> <confirmarSenha>", NamedTextColor.RED)));
+                    return;
+                }
+
                 boolean senhaCorreta = BCrypt.checkpw(senhaDigitada, conta.senhaHash());
 
                 if (senhaCorreta) {

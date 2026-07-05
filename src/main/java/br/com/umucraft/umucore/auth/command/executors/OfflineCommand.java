@@ -4,7 +4,7 @@ import br.com.umucraft.umucore.Umucore;
 import br.com.umucraft.umucore.auth.AuthManager;
 import br.com.umucraft.umucore.auth.data.Account;
 import br.com.umucraft.umucore.auth.data.AccountRepository;
-import br.com.umucraft.umucore.config.ConfigManager;
+import br.com.umucraft.umucore.auth.config.AuthConfig;
 import br.com.umucraft.umucore.logger.UmuLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -24,13 +24,13 @@ public class OfflineCommand implements CommandExecutor {
     private final Umucore plugin;
     private final AuthManager authManager;
     private final AccountRepository accountRepository;
-    private final ConfigManager configManager;
+    private final AuthConfig authConfig;
 
-    public OfflineCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, ConfigManager configManager) {
+    public OfflineCommand(Umucore plugin, AuthManager authManager, AccountRepository accountRepository, AuthConfig authConfig) {
         this.plugin = plugin;
         this.authManager = authManager;
         this.accountRepository = accountRepository;
-        this.configManager = configManager;
+        this.authConfig = authConfig;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class OfflineCommand implements CommandExecutor {
             return true;
         }
 
-        int senhaMinima = configManager.senhaMinima();
+        int senhaMinima = authConfig.senhaMinima();
         if (senha.length() < senhaMinima) {
             jogador.sendMessage(Component.text("⚠ Sua senha deve ter pelo menos " + senhaMinima + " caracteres.", NamedTextColor.GOLD));
             return true;

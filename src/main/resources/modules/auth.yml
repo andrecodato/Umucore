@@ -1,0 +1,17 @@
+# Configurações do módulo de autenticação (UmuAuth)
+
+timeout-login-segundos: 30
+
+ip-auto-login:
+  habilitado: true
+  janela-minutos: 15
+
+premium:
+  habilitado: true
+
+registro:
+  senha-minima: 4
+  # Permite que o próprio jogador use /unregister para apagar a conta.
+  # Desabilitado por padrão (jogadores acidentalmente apagarem a conta é
+  # um risco maior do que o benefício na maioria dos servidores).
+  permitir-unregister: false

@@ -1,16 +1,11 @@
-# Configurações do sistema de autenticação do UmuCore
-
-auth:
-  timeout-login-segundos: 30
-
-  ip-auto-login:
-    habilitado: true
-    janela-minutos: 15
-
-  premium:
-    habilitado: true
-
-  registro:
-    senha-minima: 4
+# Configurações centrais do UmuCore.
+# Configurações de cada módulo (auth, economy, etc.) ficam em modules/*.yml
 
 debug: false
+mostrar-banner: true
+
+# Contatos exibidos pelo comando /umuauth support. Edite livremente.
+suporte:
+  contatos:
+    - "Discord: (configure em config.yml)"
+    - "Email: (configure em config.yml)"

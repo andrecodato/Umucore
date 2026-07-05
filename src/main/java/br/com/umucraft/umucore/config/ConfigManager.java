@@ -4,6 +4,13 @@ import br.com.umucraft.umucore.Umucore;
 import br.com.umucraft.umucore.logger.UmuLogger;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.List;
+
+/**
+ * Configurações centrais do UmuCore (config.yml na raiz da pasta de
+ * dados). Configurações específicas de cada módulo (auth, economy, etc.)
+ * ficam em suas próprias classes que estendem ModuleConfig.
+ */
 public class ConfigManager {
 
     private final Umucore plugin;
@@ -28,23 +35,11 @@ public class ConfigManager {
         carregar();
     }
 
-    public int timeoutLoginSegundos() {
-        return config.getInt("auth.timeout-login-segundos", 30);
+    public boolean mostrarBanner() {
+        return config.getBoolean("mostrar-banner", true);
     }
 
-    public boolean ipAutoLoginHabilitado() {
-        return config.getBoolean("auth.ip-auto-login.habilitado", true);
-    }
-
-    public int ipAutoLoginJanelaMinutos() {
-        return config.getInt("auth.ip-auto-login.janela-minutos", 15);
-    }
-
-    public boolean premiumHabilitado() {
-        return config.getBoolean("auth.premium.habilitado", true);
-    }
-
-    public int senhaMinima() {
-        return config.getInt("auth.registro.senha-minima", 4);
+    public List<String> contatosSuporte() {
+        return config.getStringList("suporte.contatos");
     }
 }

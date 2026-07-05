@@ -69,4 +69,17 @@ public class UmuLogger {
                 .append(Component.text(mensagem, NamedTextColor.GOLD));
         Bukkit.getConsoleSender().sendMessage(mensagemCompleta);
     }
+
+    /**
+     * Imprime um banner ASCII (ver {@link Banners}) no console, uma linha
+     * por vez, sem o prefixo "[UmuCore]" para não quebrar a arte.
+     */
+    public static void banner(String[] linhas, NamedTextColor cor, String subtitulo) {
+        for (String linha : linhas) {
+            Bukkit.getConsoleSender().sendMessage(Component.text(linha, cor));
+        }
+        if (subtitulo != null) {
+            Bukkit.getConsoleSender().sendMessage(Component.text(subtitulo, NamedTextColor.GRAY));
+        }
+    }
 }
