@@ -4,3 +4,38 @@ version: '${version}'
 main: br.com.umucraft.umucore.Umucore
 api-version: '26.2'
 load: POSTWORLD
+
+commands:
+  register:
+    description: Registra uma nova conta no servidor.
+  login:
+    description: Faz login em uma conta já registrada.
+  unregister:
+    description: Apaga permanentemente sua conta registrada.
+  changepassword:
+    description: Altera a senha da sua conta.
+  premium:
+    description: Ativa o modo de login automático para contas Premium.
+  offline:
+    description: Desativa o modo Premium e define uma senha para sua conta.
+  umuauth:
+    description: Comando administrativo do sistema de autenticação.
+    permission: umucore.admin.auth
+    permission-message: O UmuCore bloqueou seu acesso. Você não tem permissão para isso!
+
+permissions:
+  umucore.admin.auth:
+    description: Permite usar o comando base /umuauth.
+    default: op
+  umucore.admin.auth.forcelogin:
+    description: Permite forçar o login de outro jogador.
+    default: op
+  umucore.admin.auth.forceunregister:
+    description: Permite apagar a conta de outro jogador à força.
+    default: op
+  umucore.admin.auth.reload:
+    description: Permite recarregar as configurações do UmuCore.
+    default: op
+  umucore.auth.bypass:
+    description: Isenta o jogador da necessidade de autenticação.
+    default: false

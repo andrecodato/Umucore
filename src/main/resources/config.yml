@@ -1,0 +1,16 @@
+# Configurações do sistema de autenticação do UmuCore
+
+auth:
+  timeout-login-segundos: 30
+
+  ip-auto-login:
+    habilitado: true
+    janela-minutos: 15
+
+  premium:
+    habilitado: true
+
+  registro:
+    senha-minima: 4
+
+debug: false
